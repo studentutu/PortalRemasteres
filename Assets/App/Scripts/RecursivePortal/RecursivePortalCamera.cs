@@ -4,25 +4,29 @@ using UnityEngine;
 
 public class RecursivePortalCamera : MonoBehaviour
 {
-    [SerializeField]
-    private Portal[] portals = new Portal[2];
+    [SerializeField] private Portal[] portals = new Portal[2];
+    [SerializeField] private RenderTexture[] rendersTextures = new RenderTexture[2];
 
-    [SerializeField]
-    private Camera portalCamera;
+    [SerializeField] private Camera portalCamera;
 
     private RenderTexture tempTexture1;
     private RenderTexture tempTexture2;
 
-    private Camera mainCamera;
+    [SerializeField] private Camera mainCamera;
 
     private const int iterations = 7;
 
     private void Awake()
     {
-        mainCamera = GetComponent<Camera>();
+        if(mainCamera == null)
+        {
+            mainCamera = GetComponent<Camera>();
+        }
+        tempTexture1 = rendersTextures[0];
+        tempTexture2 = rendersTextures[1];
 
-        tempTexture1 = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
-        tempTexture2 = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
+        // tempTexture1 = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
+        // tempTexture2 = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
     }
 
     private void Start()
