@@ -3,20 +3,26 @@
     Properties
     {
 		_OutlineColour("Outline Colour", Color) = (1, 1, 1, 1)
-		_MaskID("Mask ID", Int) = 1
+		_StencilRef(" Stencil Reference", Int) = 0
+
     }
     SubShader
     {
-        Tags 
+Tags 
 		{ 
-			"RenderType" = "Opaque" 
-			"Queue" = "Geometry+2"
+			"RenderType" = "transparent"  // Opaque  transparent tranparentcutout
+			"Queue" = "Transparent+5"  // Geometry  
+			"PreviewType" = "Plane"
+            "DisableBatching" = "false"
+            "ForceNoShadowCasting" = "false"
+            "IgnoreProjector" = "false"
+            "CanUseSpriteAtlas" = "false"
 		}
         
 		Stencil
 		{
-			Ref 0
-			Comp equal
+			Ref [_StencilRef]
+			Comp Equal  // GEqual  LEqual
 		}
 
         Pass
@@ -24,6 +30,8 @@
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+			#pragma multi_compile_instancing
+
 
             #include "UnityCG.cginc"
 

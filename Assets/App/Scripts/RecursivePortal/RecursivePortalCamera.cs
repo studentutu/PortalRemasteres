@@ -14,11 +14,23 @@ public class RecursivePortalCamera : MonoBehaviour
 
     [SerializeField] private Camera mainCamera;
 
-    private const int iterations = 7;
+    private const int iterations = 1;//7
+
+    [SerializeField] private bool test = false;
+    private void OnValidate()
+    {
+        if(!test) return;
+        if (tempTexture1 == null)
+        {
+            Awake();
+            Start();
+        }
+        OnPreRender();
+    }
 
     private void Awake()
     {
-        if(mainCamera == null)
+        if (mainCamera == null)
         {
             mainCamera = GetComponent<Camera>();
         }
@@ -37,22 +49,26 @@ public class RecursivePortalCamera : MonoBehaviour
 
     private void OnPreRender()
     {
-        if(portals[0].IsRendererVisible())
+        if (portals[0].IsRendererVisible())
         {
             portalCamera.targetTexture = tempTexture1;
-            for (int i = iterations - 1; i >= 0; --i)
-            {
-                RenderCamera(portals[0], portals[1], i);
-            }
+            // for (int i = iterations - 1; i >= 0; --i)
+            // {
+            //     RenderCamera(portals[0], portals[1], i);
+            // }
+            RenderCamera(portals[0], portals[1], 0);
+
         }
 
-        if(portals[1].IsRendererVisible())
+        if (portals[1].IsRendererVisible())
         {
             portalCamera.targetTexture = tempTexture2;
-            for (int i = iterations - 1; i >= 0; --i)
-            {
-                RenderCamera(portals[1], portals[0], i);
-            }
+            // for (int i = iterations - 1; i >= 0; --i)
+            // {
+            //     RenderCamera(portals[1], portals[0], i);
+            // }
+            RenderCamera(portals[1], portals[0], 0);
+
         }
     }
 
@@ -65,7 +81,7 @@ public class RecursivePortalCamera : MonoBehaviour
         cameraTransform.position = transform.position;
         cameraTransform.rotation = transform.rotation;
 
-        for(int i = 0; i <= iterationID; ++i)
+        for (int i = 0; i <= iterationID; ++i)
         {
             // Position the camera behind the other portal.
             Vector3 relativePos = inTransform.InverseTransformPoint(cameraTransform.position);

@@ -17,13 +17,16 @@ public class Portal : MonoBehaviour
     private List<Rigidbody> rigidbodies = new List<Rigidbody>();
 
     private Material material;
-    private new Renderer renderer;
-    private new BoxCollider collider;
+    [SerializeField] private new Renderer renderer;
+    [SerializeField] private new BoxCollider collider;
 
     private void Awake()
     {
-        collider = GetComponent<BoxCollider>();
-        renderer = GetComponent<Renderer>();
+        if (renderer == null)
+        {
+            collider = GetComponent<BoxCollider>();
+            renderer = GetComponent<Renderer>();
+        }
         material = renderer.material;
     }
 
@@ -63,6 +66,11 @@ public class Portal : MonoBehaviour
 
     public void SetTexture(RenderTexture tex)
     {
+        if (material == null)
+        {
+            Awake();
+            Start();
+        }
         material.mainTexture = tex;
     }
 
@@ -102,7 +110,7 @@ public class Portal : MonoBehaviour
             rigidbodies.Add(otherRigidbody);
 
             var player = other.GetComponent<PlayerController>();
-            if(player != null)
+            if (player != null)
             {
                 player.ChangePortalTriggerCount(1);
             }
@@ -113,7 +121,7 @@ public class Portal : MonoBehaviour
     {
         var otherRigidbody = other.GetComponent<Rigidbody>();
 
-        if(rigidbodies.Contains(otherRigidbody))
+        if (rigidbodies.Contains(otherRigidbody))
         {
             rigidbodies.Remove(otherRigidbody);
 
