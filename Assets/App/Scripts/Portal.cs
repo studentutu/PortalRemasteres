@@ -8,6 +8,7 @@ public class Portal : MonoBehaviour
 {
     [SerializeField] private bool Recursve = false;
     [SerializeField] private Camera thisCam;
+    [SerializeField] private Camera secondary;
     [SerializeField] private Portal otherPortal;
 
     [SerializeField] private Renderer outlineRenderer;
@@ -47,7 +48,7 @@ public class Portal : MonoBehaviour
         if(Recursve && !Application.isPlaying)
         {
             // Gizmos.DrawFrustum(Vector3.zero,thisCam.fieldOfView, thisCam.farClipPlane,thisCam);
-            RenderCamera(this, otherPortal, 0);
+            RenderCamera(this);
         }
     }
 
@@ -65,25 +66,30 @@ public class Portal : MonoBehaviour
 
         if (Recursve)
         {
-            RenderCamera(this, otherPortal, 0);
+            RenderCamera(this);
         }
     }
 
-    private void RenderCamera(Portal inPortal, Portal outPortal, int iterationID)
+    private void RenderCamera(Portal inPortal)
     {
         Transform inTransform = inPortal.transform;
-        Transform outTransform = outPortal.transform;
-        Transform portalCamera = outPortal.thisCam.transform;
+        Transform outTransform = otherPortal.transform;
+        Transform outPortalCamera = otherPortal.thisCam.transform;
 
         // Position the camera behind the other portal.
         Vector3 relativePos = inTransform.InverseTransformPoint(Camera.main. transform.position);
         relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
-        portalCamera.transform.position = outTransform.TransformPoint(relativePos);
+        outPortalCamera.transform.position = outTransform.TransformPoint(relativePos);
 
         // Rotate the camera to look through the other portal.
         Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * Camera.main. transform.rotation;
         relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
-        portalCamera.transform.rotation = outTransform.rotation * relativeRot;
+        outPortalCamera.transform.rotation = outTransform.rotation * relativeRot;
+
+        // Secondary cam
+        // otherPortal.secondary.transform.position = Camera.main. transform.position;
+        // otherPortal.secondary.transform.rotation = Camera.main. transform.position;
+
         
         
         // Set the camera's oblique view frustum.

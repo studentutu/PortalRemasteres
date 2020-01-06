@@ -2,11 +2,14 @@ Shader "Portals/RecursivePortalMask0Pass"
 {
 	Properties
 	{
-		// _MainTex("Main Texture", 2D) = "white" {}
-		_StencilRef(" Stencil Reference", Float) = 1
-
-		// _StencilWrite("Stencil Write mask", Float) = 119
-		// _StencilRead("Stencil Read Mask", Float) = 119
+		_SecondTex("Second Texture", 2D) = "white" {}
+		_StencilRef("Stencil Reference", Float) = 1
+		
+		_StencilComp(" Stencil Comparison", Float) = 8
+        _Stencil(" Stencil ID", Float) = 0
+        _StencilOp(" Stencil Operation", Float) = 0
+        _StencilWriteMask(" Stencil Write Mask", Float) = 255
+        _StencilReadMask(" Stencil Read Mask", Float) = 255
 	}
 	SubShader
 	{
@@ -16,24 +19,25 @@ Shader "Portals/RecursivePortalMask0Pass"
 			"RenderType" = "Opaque"  // Opaque  transparent tranparentcutout
 			"Queue" = "Geometry+1"  // Geometry  
 			"PreviewType" = "Plane"
-            "DisableBatching" = "false"
-            "ForceNoShadowCasting" = "true"
-            "IgnoreProjector" = "true"
-            "CanUseSpriteAtlas" = "false"
-
+			"DisableBatching" = "false"
+			"ForceNoShadowCasting" = "true"
+			"IgnoreProjector" = "true"
+			"CanUseSpriteAtlas" = "false"
 		}
+		// Cull both
+		Lighting Off
+		ZWrite On
 
 		Pass
 		{
 			// Blend SrcAlpha OneMinusSrcAlpha
 			Stencil
 			{
-				// ReadMask [_StencilRead]
-				// WriteMask [_StencilWrite]
-				Ref [_StencilRef]
-
-				Comp Always // GEqual Always
-				Pass Replace
+				Ref[_Stencil]
+				Comp[_StencilComp]
+				Pass[_StencilOp]
+				ReadMask[_StencilReadMask]
+				WriteMask[_StencilWriteMask]
 			}
 			CGPROGRAM
 			#pragma vertex vert
@@ -42,6 +46,8 @@ Shader "Portals/RecursivePortalMask0Pass"
 			
 
 			#include "UnityCG.cginc"
+
+			uniform sampler2D _SecondTex;
 
 			struct appdata
 			{
@@ -60,16 +66,13 @@ Shader "Portals/RecursivePortalMask0Pass"
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.screenPos = ComputeScreenPos(o.vertex);
-				o.screenPos.w = 1/ o.screenPos.w;
 				return o;
 			}
 
-			uniform sampler2D _MainTex;
-
 			fixed4 frag(v2f i) : SV_Target
 			{
-				float2 uv = i.screenPos.xy * i.screenPos.w;
-				fixed4 col = tex2D(_MainTex, uv);
+				float2 uv = i.screenPos.xy / i.screenPos.w;
+				fixed4 col = tex2D(_SecondTex, uv);
 				// col.a = 1;
 				return col;
 			}
