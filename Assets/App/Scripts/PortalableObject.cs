@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#pragma warning disable 
+
 
 public class PortalableObject : MonoBehaviour
 {
@@ -8,10 +10,8 @@ public class PortalableObject : MonoBehaviour
 
     private bool isInPortal = true;
 
-    [SerializeField]
-    private Transform inPortal;
-    [SerializeField]
-    private Transform outPortal;
+    [SerializeField] private Transform inPortal;
+    [SerializeField] private Transform outPortal;
 
     private void Awake()
     {

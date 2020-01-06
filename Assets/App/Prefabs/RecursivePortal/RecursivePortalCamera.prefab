@@ -141,7 +141,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: 10
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 1591
@@ -179,7 +179,12 @@ MonoBehaviour:
   portals:
   - {fileID: 0}
   - {fileID: 0}
+  rendersTextures:
+  - {fileID: 8400000, guid: cc609aa379da51942ae6b6ed57478a86, type: 2}
+  - {fileID: 8400000, guid: 2dd3fb3ed5101424e99708ff7a68a89f, type: 2}
   portalCamera: {fileID: 4726988590406460076}
+  mainCamera: {fileID: 4726988590624584908}
+  test: 0
 --- !u!54 &681960814
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -220,9 +225,9 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
+  m_MotionVectors: 2
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

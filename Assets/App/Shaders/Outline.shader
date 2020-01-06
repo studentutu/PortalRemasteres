@@ -8,10 +8,10 @@
     }
     SubShader
     {
-Tags 
+        Tags 
 		{ 
 			"RenderType" = "transparent"  // Opaque  transparent tranparentcutout
-			"Queue" = "Transparent+5"  // Geometry  
+			"Queue" = "Geometry+1"  // Geometry  
 			"PreviewType" = "Plane"
             "DisableBatching" = "false"
             "ForceNoShadowCasting" = "false"

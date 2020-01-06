@@ -1,18 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#pragma warning disable 
 
 [RequireComponent(typeof(BoxCollider))]
 public class Portal : MonoBehaviour
 {
-    [SerializeField]
-    private Portal otherPortal;
+    [SerializeField] private bool Recursve = false;
+    [SerializeField] private Camera thisCam;
+    [SerializeField] private Portal otherPortal;
 
-    [SerializeField]
-    private Renderer outlineRenderer;
+    [SerializeField] private Renderer outlineRenderer;
 
-    [SerializeField]
-    private Color portalColour;
+    [SerializeField] private Color portalColour;
 
     private List<Rigidbody> rigidbodies = new List<Rigidbody>();
 
@@ -20,6 +20,7 @@ public class Portal : MonoBehaviour
     [SerializeField] private new Renderer renderer;
     [SerializeField] private new BoxCollider collider;
 
+    private Matrix4x4 normalProjectoion;
     private void Awake()
     {
         if (renderer == null)
@@ -40,6 +41,16 @@ public class Portal : MonoBehaviour
         SetColour(portalColour);
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        // Debug.LogWarning(" Secelted!!!!!!!!");
+        if(Recursve)
+        {
+            // Gizmos.DrawFrustum(Vector3.zero,thisCam.fieldOfView, thisCam.farClipPlane,thisCam);
+            RenderCamera(this, otherPortal, 0);
+        }
+    }
+
     private void Update()
     {
         for (int i = 0; i < rigidbodies.Count; ++i)
@@ -51,6 +62,41 @@ public class Portal : MonoBehaviour
                 Warp(rigidbodies[i]);
             }
         }
+
+        if (Recursve)
+        {
+            RenderCamera(this, otherPortal, 0);
+        }
+    }
+
+    private void RenderCamera(Portal inPortal, Portal outPortal, int iterationID)
+    {
+        Transform inTransform = inPortal.transform;
+        Transform outTransform = outPortal.transform;
+
+        Transform cameraTransform = outPortal.thisCam.transform;
+        cameraTransform.position = transform.position;
+        cameraTransform.rotation = transform.rotation;
+
+        // for (int i = 0; i <= iterationID; ++i)
+        {
+            // Position the camera behind the other portal.
+            Vector3 relativePos = inTransform.InverseTransformPoint(Camera.main.transform.position);
+            relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
+            cameraTransform.position = outTransform.TransformPoint(relativePos);
+            
+
+            // Rotate the camera to look through the other portal.
+            Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * cameraTransform.rotation;
+            relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
+            cameraTransform.rotation = outTransform.rotation * relativeRot;
+        }
+
+        otherPortal.thisCam.nearClipPlane = cameraTransform.localPosition.magnitude;
+        otherPortal.thisCam.fieldOfView =  Camera.main.fieldOfView;
+
+        // Render the camera to its render target.
+        // thisCam.Render();
     }
 
     public void SetColour(Color colour)

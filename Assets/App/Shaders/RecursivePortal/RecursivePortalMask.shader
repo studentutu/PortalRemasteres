@@ -8,7 +8,13 @@
     {
 		Tags 
 		{ 
-			"RenderType" = "Opaque"
+			"RenderType" = "Opaque"  // Opaque  transparent tranparentcutout
+			"Queue" = "Geometry+2"  // Geometry  
+			"PreviewType" = "Plane"
+            "DisableBatching" = "false"
+            "ForceNoShadowCasting" = "true"
+            "IgnoreProjector" = "true"
+            "CanUseSpriteAtlas" = "false"
 		}
 
         Pass
@@ -22,6 +28,7 @@
 			CGPROGRAM
 				#pragma vertex vert
 				#pragma fragment frag
+				#pragma multi_compile_instancing
 
 				#include "UnityCG.cginc"
 
