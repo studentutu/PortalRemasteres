@@ -44,7 +44,7 @@ public class Portal : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         // Debug.LogWarning(" Secelted!!!!!!!!");
-        if(Recursve)
+        if(Recursve && !Application.isPlaying)
         {
             // Gizmos.DrawFrustum(Vector3.zero,thisCam.fieldOfView, thisCam.farClipPlane,thisCam);
             RenderCamera(this, otherPortal, 0);
@@ -73,37 +73,29 @@ public class Portal : MonoBehaviour
     {
         Transform inTransform = inPortal.transform;
         Transform outTransform = outPortal.transform;
+        Transform portalCamera = outPortal.thisCam.transform;
 
-        Transform cameraTransform = outPortal.thisCam.transform;
-        cameraTransform.position = transform.position;
-        cameraTransform.rotation = transform.rotation;
+        // Position the camera behind the other portal.
+        Vector3 relativePos = inTransform.InverseTransformPoint(Camera.main. transform.position);
+        relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
+        portalCamera.transform.position = outTransform.TransformPoint(relativePos);
 
-        // for (int i = 0; i <= iterationID; ++i)
-        {
-            // Position the camera behind the other portal.
-            Vector3 relativePos = inTransform.InverseTransformPoint(Camera.main.transform.position);
-            relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
-            cameraTransform.position = outTransform.TransformPoint(relativePos);
-            
+        // Rotate the camera to look through the other portal.
+        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * Camera.main. transform.rotation;
+        relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
+        portalCamera.transform.rotation = outTransform.rotation * relativeRot;
+        
+        
+        // Set the camera's oblique view frustum.
+        Plane p = new Plane(-outTransform.forward, outTransform.position);
+        Vector4 clipPlane = new Vector4(p.normal.x, p.normal.y, p.normal.z, p.distance);
+        Vector4 clipPlaneCameraSpace =
+            Matrix4x4.Transpose(Matrix4x4.Inverse(otherPortal.thisCam.worldToCameraMatrix)) * clipPlane;
 
-            // Rotate the camera to look through the other portal.
-            Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * cameraTransform.rotation;
-            relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
-            cameraTransform.rotation = outTransform.rotation * relativeRot;
-        }
+        var newMatrix = Camera.main.CalculateObliqueMatrix(clipPlaneCameraSpace);
+        otherPortal.thisCam.projectionMatrix = newMatrix;
 
-        otherPortal.thisCam.fieldOfView =  Camera.main.fieldOfView;
-
-                // Set the camera's oblique view frustum.
-        // Plane p = new Plane(-outTransform.forward, outTransform.position);
-        // Vector4 clipPlane = new Vector4(p.normal.x, p.normal.y, p.normal.z, p.distance);
-        // Vector4 clipPlaneCameraSpace =
-        //     Matrix4x4.Transpose(Matrix4x4.Inverse(otherPortal.thisCam.worldToCameraMatrix)) * clipPlane;
-
-        // var newMatrix = Camera.main.CalculateObliqueMatrix(clipPlaneCameraSpace);
-        // otherPortal.thisCam.projectionMatrix = newMatrix;
-
-        otherPortal.thisCam.nearClipPlane = cameraTransform.localPosition.magnitude;
+        // otherPortal.thisCam.nearClipPlane = cameraTransform.localPosition.magnitude;
         // Render the camera to its render target.
         // thisCam.Render();
     }

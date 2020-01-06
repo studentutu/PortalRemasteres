@@ -63,12 +63,12 @@ public class BasicPortalCamera : MonoBehaviour
         Transform outTransform = outPortal.transform;
 
         // Position the camera behind the other portal.
-        Vector3 relativePos = inTransform.InverseTransformPoint(transform.position);
+        Vector3 relativePos = inTransform.InverseTransformPoint(Camera.main. transform.position);
         relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
         portalCamera.transform.position = outTransform.TransformPoint(relativePos);
 
         // Rotate the camera to look through the other portal.
-        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * transform.rotation;
+        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * Camera.main. transform.rotation;
         relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
         portalCamera.transform.rotation = outTransform.rotation * relativeRot;
         
@@ -78,7 +78,7 @@ public class BasicPortalCamera : MonoBehaviour
         Vector4 clipPlaneCameraSpace =
             Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * clipPlane;
 
-        var newMatrix = mainCamera.CalculateObliqueMatrix(clipPlaneCameraSpace);
+        var newMatrix = Camera.main.CalculateObliqueMatrix(clipPlaneCameraSpace);
         portalCamera.projectionMatrix = newMatrix;
 
         // Render the camera to its render target.
