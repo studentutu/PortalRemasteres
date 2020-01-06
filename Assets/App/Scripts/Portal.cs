@@ -92,9 +92,18 @@ public class Portal : MonoBehaviour
             cameraTransform.rotation = outTransform.rotation * relativeRot;
         }
 
-        otherPortal.thisCam.nearClipPlane = cameraTransform.localPosition.magnitude;
         otherPortal.thisCam.fieldOfView =  Camera.main.fieldOfView;
 
+                // Set the camera's oblique view frustum.
+        // Plane p = new Plane(-outTransform.forward, outTransform.position);
+        // Vector4 clipPlane = new Vector4(p.normal.x, p.normal.y, p.normal.z, p.distance);
+        // Vector4 clipPlaneCameraSpace =
+        //     Matrix4x4.Transpose(Matrix4x4.Inverse(otherPortal.thisCam.worldToCameraMatrix)) * clipPlane;
+
+        // var newMatrix = Camera.main.CalculateObliqueMatrix(clipPlaneCameraSpace);
+        // otherPortal.thisCam.projectionMatrix = newMatrix;
+
+        otherPortal.thisCam.nearClipPlane = cameraTransform.localPosition.magnitude;
         // Render the camera to its render target.
         // thisCam.Render();
     }
