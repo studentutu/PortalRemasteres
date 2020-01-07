@@ -6,15 +6,15 @@ Shader "Portals/RecursivePortalMask0Pass"
 		_Color (" Color To Use", Color) = (1,1,1,1)
 		[IntRange]_StencilRef("Stencil Reference", Range(0,255)) = 1
 		
-		[IntRange]_StencilComp(" Stencil Comparison", Range(0,8)) = 8
+		[Enum(UnityEngine.Rendering.CompareFunction)]_StencilComp(" Stencil Comparison", Int) = 8
         // 0 keep, 1 - Zero, 2 - Replace, 
 		// 3 - IncrementSaturate ,4- DecrementSaturate
 		// 5 - Invert , 6 - IncrementWrap, 
 		// 7- DecrementWrap
-        
-		[IntRange]_StencilOp(" Stencil Operation Main", Range(0,7)) = 0
-        [IntRange]_StencilOpFail(" Stencil Operation On Fail", Range(0,7)) = 0
-        [IntRange]_StencilOpZFail(" Stencil Operation On ZTestFail", Range(0,7)) = 0
+        [Header(Stencil Stuff)]
+		[Enum(UnityEngine.Rendering.StencilOp)]_StencilOp(" Stencil Operation Main", Int) = 0
+        [Enum(UnityEngine.Rendering.StencilOp)]_StencilOpFail(" Stencil Operation On Fail", Int) = 0
+        [Enum(UnityEngine.Rendering.StencilOp)]_StencilOpZFail(" Stencil Operation On ZTestFail", Int) = 0
 
         // [IntRange]_StencilWriteMask(" Stencil Write Mask", Range(0,255)) = 255
         // [IntRange]_StencilReadMask(" Stencil Read Mask", Range(0,255)) = 255

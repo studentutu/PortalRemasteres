@@ -1,28 +1,29 @@
 ﻿Shader "Portals/PortalMask"
 {
-    Properties
-    {
+	Properties
+	{
 		_Colour("Base Colour", Color) = (1, 1, 1, 1)
 		_MaskID("Mask ID", Int) = 1
-    }
-    SubShader
-    {
-        Tags
+	}
+	SubShader
+	{
+		Tags
 		{ 
 			"RenderType" = "Opaque" 
 			"Queue" = "Geometry" 
 		}
 
-        Pass
-        {
+		Pass
+		{
 			Stencil
 			{
 				Ref [_MaskID]
 				Comp Always
 				Pass replace
 			}
+			Offset -1, -1
 
-		CGPROGRAM
+			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
 
@@ -54,7 +55,7 @@
 			{
 				return _Colour;
 			}
-		ENDCG
-        }
-    }
+			ENDCG
+		}
+	}
 }

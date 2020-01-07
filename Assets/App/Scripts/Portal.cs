@@ -7,8 +7,9 @@ using UnityEngine;
 public class Portal : MonoBehaviour
 {
     [SerializeField] private bool Recursve = false;
+    [SerializeField] private Transform forwardRevert = null;
+    
     [SerializeField] private Camera thisCam;
-    [SerializeField] private Camera secondary;
     [SerializeField] private Portal otherPortal;
 
     [SerializeField] private Renderer outlineRenderer;
@@ -40,13 +41,13 @@ public class Portal : MonoBehaviour
             collider.size.y - diameter, collider.size.z);
 
         PlacePortal(transform.position, transform.forward, transform.up);
-        SetColour(portalColour);
+        // SetColour(portalColour);
     }
 
     private void OnDrawGizmosSelected()
     {
         // Debug.LogWarning(" Secelted!!!!!!!!");
-        if(Recursve && !Application.isPlaying)
+        if (Recursve && !Application.isPlaying)
         {
             material = null;
             // Gizmos.DrawFrustum(Vector3.zero,thisCam.fieldOfView, thisCam.farClipPlane,thisCam);
@@ -105,7 +106,20 @@ public class Portal : MonoBehaviour
 
         // otherPortal.thisCam.nearClipPlane = cameraTransform.localPosition.magnitude;
         // Render the camera to its render target.
-        // thisCam.Render();
+        otherPortal.thisCam.Render();
+    }
+
+    /// <summary>
+    /// Takes a point in the coordinate space specified 
+    /// by the "from" transform and transforms it to be the correct
+    /// point in the coordinate space specified by the "to" 
+    /// transform applies rotation, scale and translation.
+    /// </summary>
+    /// <returns>Point to.</returns>
+    public static Vector3 TransformPointFromTo(Transform from, Transform to, Vector3 fromPoint)
+    {
+        Vector3 worldPoint = (from == null) ? fromPoint : from.InverseTransformPoint(fromPoint);
+        return (to == null) ? worldPoint : to.TransformPoint(worldPoint);
     }
 
     public void SetColour(Color colour)

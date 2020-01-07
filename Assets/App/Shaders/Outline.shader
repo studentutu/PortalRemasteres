@@ -10,8 +10,8 @@
     {
         Tags 
 		{ 
-			"RenderType" = "transparent"  // Opaque  transparent tranparentcutout
-			"Queue" = "Geometry+2"  // Geometry  
+			"RenderType" = "Opaque"  // Opaque  transparent tranparentcutout
+			"Queue" = "Geometry+1"  // Geometry  
 			"PreviewType" = "Plane"
             "DisableBatching" = "false"
             "ForceNoShadowCasting" = "false"
@@ -26,7 +26,9 @@
 		}
         Lighting Off
 		ZWrite Off
-		Offset -1, -1
+        // Cull off
+        // Ztest Off
+		// Offset -1, -1
 
 
         Pass

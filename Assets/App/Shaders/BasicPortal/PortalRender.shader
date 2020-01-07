@@ -3,23 +3,24 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-		_MaskID("Mask ID", Int) = 1
+        _MaskID("Mask ID", Int) = 1
     }
     SubShader
     {
-		Tags
-		{ 
-			"RenderType" = "Opaque" 
-			"Queue" = "Geometry+2" 
-		}
+        Tags
+        { 
+            "RenderType" = "Opaque" 
+            "Queue" = "Geometry+2" 
+        }
 
         Pass
         {
-			Stencil
-			{
-				Ref [_MaskID]
-				Comp equal
-			}
+            Stencil
+            {
+                Ref [_MaskID]
+                Comp equal
+            }
+            Offset -1, -1
 
             CGPROGRAM
             #pragma vertex vert

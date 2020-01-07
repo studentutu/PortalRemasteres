@@ -77,7 +77,7 @@ Material:
     - _StencilOpFail: 0
     - _StencilOpZFail: 0
     - _StencilReadMask: 255
-    - _StencilRef: 1
+    - _StencilRef: 2
     - _StencilWriteMask: 0
     - _UVSec: 0
     - _ZWrite: 1
