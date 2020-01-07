@@ -504,10 +504,10 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: 10
+  m_Depth: -100
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1591
+    m_Bits: 4294967295
   m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -558,6 +558,7 @@ GameObject:
   - component: {fileID: 344314180}
   - component: {fileID: 344314207}
   - component: {fileID: 344314200}
+  - component: {fileID: 4726988590827995391}
   m_Layer: 8
   m_Name: PlayerCamera
   m_TagString: MainCamera
@@ -565,6 +566,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &4726988590827995391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4726988590827995390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7df33f509e1c87746a82ceebc1f8c7f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  matherialToUse: {fileID: 2100000, guid: 0774efae7bc3c8a42a3efa4b3ac2a6ca, type: 2}
 --- !u!1 &4726988591343852482
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,6 +617,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 38828970, guid: d66234c2b7828044d947dec754266dd0, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 1108331116, guid: d66234c2b7828044d947dec754266dd0, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 1108331117, guid: d66234c2b7828044d947dec754266dd0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.49999988
+      objectReference: {fileID: 0}
+    - target: {fileID: 1108331117, guid: d66234c2b7828044d947dec754266dd0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 137260378139514096, guid: d66234c2b7828044d947dec754266dd0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -662,6 +692,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RecursivePortalPair
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708287373399788274, guid: d66234c2b7828044d947dec754266dd0,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708287373399788274, guid: d66234c2b7828044d947dec754266dd0,
+        type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8c0277c23369896488104233946f04ee, type: 2}
+    - target: {fileID: 8708287373399788276, guid: d66234c2b7828044d947dec754266dd0,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8708287374288484309, guid: d66234c2b7828044d947dec754266dd0,
         type: 3}

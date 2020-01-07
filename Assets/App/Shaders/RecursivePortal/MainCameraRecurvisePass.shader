@@ -1,4 +1,4 @@
-﻿Shader "Portals/RecursivePortalMask"
+﻿Shader "Portals/MainCamRecursivePass"
 {
     Properties
     {
@@ -27,7 +27,7 @@
 		Tags 
 		{ 
 			"RenderType" = "Opaque"  // Opaque  transparent tranparentcutout
-			"Queue" = "Geometry+1"  // Geometry  
+			"Queue" = "Geometry+2"  // Geometry  
 			"PreviewType" = "Plane"
             "DisableBatching" = "false"
             "ForceNoShadowCasting" = "true"

@@ -11,7 +11,7 @@
         Tags 
 		{ 
 			"RenderType" = "transparent"  // Opaque  transparent tranparentcutout
-			"Queue" = "Geometry+1"  // Geometry  
+			"Queue" = "Geometry+2"  // Geometry  
 			"PreviewType" = "Plane"
             "DisableBatching" = "false"
             "ForceNoShadowCasting" = "false"
@@ -24,6 +24,10 @@
 			Ref [_StencilRef]
 			Comp Equal  // GEqual  LEqual
 		}
+        Lighting Off
+		ZWrite Off
+		Offset -1, -1
+
 
         Pass
         {

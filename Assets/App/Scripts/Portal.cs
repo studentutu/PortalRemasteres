@@ -24,6 +24,7 @@ public class Portal : MonoBehaviour
     private Matrix4x4 normalProjectoion;
     private void Awake()
     {
+        material = null;
         if (renderer == null)
         {
             collider = GetComponent<BoxCollider>();
@@ -47,6 +48,7 @@ public class Portal : MonoBehaviour
         // Debug.LogWarning(" Secelted!!!!!!!!");
         if(Recursve && !Application.isPlaying)
         {
+            material = null;
             // Gizmos.DrawFrustum(Vector3.zero,thisCam.fieldOfView, thisCam.farClipPlane,thisCam);
             RenderCamera(this);
         }

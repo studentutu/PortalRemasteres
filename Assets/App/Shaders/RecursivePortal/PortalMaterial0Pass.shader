@@ -3,13 +3,21 @@ Shader "Portals/RecursivePortalMask0Pass"
 	Properties
 	{
 		_SecondTex("Second Texture", 2D) = "white" {}
-		_StencilRef("Stencil Reference", Float) = 1
+		_Color (" Color To Use", Color) = (1,1,1,1)
+		[IntRange]_StencilRef("Stencil Reference", Range(0,255)) = 1
 		
-		_StencilComp(" Stencil Comparison", Float) = 8
-        _Stencil(" Stencil ID", Float) = 0
-        _StencilOp(" Stencil Operation", Float) = 0
-        _StencilWriteMask(" Stencil Write Mask", Float) = 255
-        _StencilReadMask(" Stencil Read Mask", Float) = 255
+		[IntRange]_StencilComp(" Stencil Comparison", Range(0,8)) = 8
+        // 0 keep, 1 - Zero, 2 - Replace, 
+		// 3 - IncrementSaturate ,4- DecrementSaturate
+		// 5 - Invert , 6 - IncrementWrap, 
+		// 7- DecrementWrap
+        
+		[IntRange]_StencilOp(" Stencil Operation Main", Range(0,7)) = 0
+        [IntRange]_StencilOpFail(" Stencil Operation On Fail", Range(0,7)) = 0
+        [IntRange]_StencilOpZFail(" Stencil Operation On ZTestFail", Range(0,7)) = 0
+
+        // [IntRange]_StencilWriteMask(" Stencil Write Mask", Range(0,255)) = 255
+        // [IntRange]_StencilReadMask(" Stencil Read Mask", Range(0,255)) = 255
 	}
 	SubShader
 	{
@@ -17,7 +25,7 @@ Shader "Portals/RecursivePortalMask0Pass"
 		Tags 
 		{ 
 			"RenderType" = "Opaque"  // Opaque  transparent tranparentcutout
-			"Queue" = "Geometry+1"  // Geometry  
+			"Queue" = "Geometry+10"  // Geometry  
 			"PreviewType" = "Plane"
 			"DisableBatching" = "false"
 			"ForceNoShadowCasting" = "true"
@@ -26,18 +34,22 @@ Shader "Portals/RecursivePortalMask0Pass"
 		}
 		// Cull both
 		Lighting Off
-		ZWrite On
+		ZWrite Off
 
 		Pass
 		{
 			// Blend SrcAlpha OneMinusSrcAlpha
+			Blend Zero One
+
 			Stencil
 			{
-				Ref[_Stencil]
+				Ref[_StencilRef]
 				Comp[_StencilComp]
 				Pass[_StencilOp]
-				ReadMask[_StencilReadMask]
-				WriteMask[_StencilWriteMask]
+				// ReadMask[_StencilReadMask]
+				// WriteMask[_StencilWriteMask]
+				Fail[_StencilOpFail] // do not change stencil value if stencil test fails
+            	ZFail[_StencilOpZFail] // do not change stencil value if stencil test passes but depth test fails
 			}
 			CGPROGRAM
 			#pragma vertex vert
@@ -48,6 +60,7 @@ Shader "Portals/RecursivePortalMask0Pass"
 			#include "UnityCG.cginc"
 
 			uniform sampler2D _SecondTex;
+			uniform fixed4 _Color;
 
 			struct appdata
 			{
@@ -72,7 +85,9 @@ Shader "Portals/RecursivePortalMask0Pass"
 			fixed4 frag(v2f i) : SV_Target
 			{
 				float2 uv = i.screenPos.xy / i.screenPos.w;
-				fixed4 col = tex2D(_SecondTex, uv);
+				fixed4 col = 
+				_Color;
+				// tex2D(_SecondTex, uv);
 				// col.a = 1;
 				return col;
 			}
