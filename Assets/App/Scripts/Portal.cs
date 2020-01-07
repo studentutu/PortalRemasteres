@@ -67,10 +67,14 @@ public class Portal : MonoBehaviour
             }
         }
 
-        if (Recursve)
+        if (Recursve && renderer.isVisible)
         {
             RenderCamera(this);
         }
+    }
+    public void RenderPortal()
+    {
+        RenderCamera(this);
     }
 
     private void RenderCamera(Portal inPortal)
@@ -89,14 +93,9 @@ public class Portal : MonoBehaviour
         relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
         outPortalCamera.transform.rotation = outTransform.rotation * relativeRot;
 
-        // Secondary cam
-        // otherPortal.secondary.transform.position = Camera.main. transform.position;
-        // otherPortal.secondary.transform.rotation = Camera.main. transform.position;
-
-        
         
         // Set the camera's oblique view frustum.
-        Plane p = new Plane(-outTransform.forward, outTransform.position);
+        Plane p = new Plane(otherPortal.forwardRevert.forward, outTransform.position);
         Vector4 clipPlane = new Vector4(p.normal.x, p.normal.y, p.normal.z, p.distance);
         Vector4 clipPlaneCameraSpace =
             Matrix4x4.Transpose(Matrix4x4.Inverse(otherPortal.thisCam.worldToCameraMatrix)) * clipPlane;
