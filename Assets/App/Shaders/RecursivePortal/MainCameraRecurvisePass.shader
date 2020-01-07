@@ -27,7 +27,7 @@
 		Tags 
 		{ 
 			"RenderType" = "Opaque"  // Opaque  transparent tranparentcutout
-			"Queue" = "Geometry+2"  // Geometry  
+			"Queue" = "Geometry+100"  // Geometry  
 			"PreviewType" = "Plane"
             "DisableBatching" = "false"
             "ForceNoShadowCasting" = "true"
@@ -40,7 +40,7 @@
 
         Pass
         {
-			// Blend SrcAlpha OneMinusSrcAlpha
+			Blend SrcAlpha OneMinusSrcAlpha
 			Stencil
 			{
 				Ref[_StencilRef]
