@@ -8,21 +8,14 @@ public class Portal : MonoBehaviour
 {
     [SerializeField] private bool Recursve = false;
     [SerializeField] private Transform forwardRevert = null;
-    
     [SerializeField] private Camera thisCam;
     [SerializeField] private Portal otherPortal;
-
     [SerializeField] private Renderer outlineRenderer;
-
-    [SerializeField] private Color portalColour;
-
     private List<Rigidbody> rigidbodies = new List<Rigidbody>();
-
     private Material material;
     [SerializeField] private new Renderer renderer;
     [SerializeField] private new BoxCollider collider;
 
-    private Matrix4x4 normalProjectoion;
     private void Awake()
     {
         material = null;
@@ -84,16 +77,31 @@ public class Portal : MonoBehaviour
         Transform outPortalCamera = otherPortal.thisCam.transform;
 
         // Position the camera behind the other portal.
-        Vector3 relativePos = inTransform.InverseTransformPoint(Camera.main. transform.position);
+        Vector3 relativePos = inTransform.InverseTransformPoint(Camera.main.transform.position);
         relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
-        outPortalCamera.transform.position = outTransform.TransformPoint(relativePos);
+        outPortalCamera.position = outTransform.TransformPoint(relativePos);
+
+        // Quaternion beforeOtherRot = otherPortal.forwardRevert.rotation;
+        // Vector3 beforeOtherPos = otherPortal.forwardRevert.position;
+
+        // otherPortal.forwardRevert.rotation = Camera.main.transform.rotation;
+        // otherPortal.forwardRevert.position = Camera.main.transform.position;
 
         // Rotate the camera to look through the other portal.
-        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * Camera.main. transform.rotation;
-        relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
-        outPortalCamera.transform.rotation = outTransform.rotation * relativeRot;
+        // Quaternion relativeRot = otherPortal.forwardRevert.localRotation;
+        // // Quaternion.Inverse(inTransform.rotation) * Camera.main.transform.rotation;
+        // relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
+        // outPortalCamera.localRotation = outTransform.rotation * relativeRot;
 
-        
+        // otherPortal.forwardRevert.position = beforeOtherPos;
+        // otherPortal.forwardRevert.rotation = beforeOtherRot;
+
+        // Rotate the camera to look through the other portal.
+        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * outPortalCamera.rotation;
+        relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
+        outPortalCamera.rotation = outTransform.rotation * relativeRot;
+
+
         // Set the camera's oblique view frustum.
         Plane p = new Plane(otherPortal.forwardRevert.forward, outTransform.position);
         Vector4 clipPlane = new Vector4(p.normal.x, p.normal.y, p.normal.z, p.distance);
@@ -121,11 +129,6 @@ public class Portal : MonoBehaviour
         return (to == null) ? worldPoint : to.TransformPoint(worldPoint);
     }
 
-    public void SetColour(Color colour)
-    {
-        material.SetColor("_Colour", colour);
-        outlineRenderer.material.SetColor("_OutlineColour", colour);
-    }
 
     public void SetMaskID(int id)
     {

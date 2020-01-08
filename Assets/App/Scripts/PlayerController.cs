@@ -5,8 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    private Collider wallCollider;
+    // [SerializeField]
+    // private Collider wallCollider;
 
     private int portalTriggerCount = 0;
 

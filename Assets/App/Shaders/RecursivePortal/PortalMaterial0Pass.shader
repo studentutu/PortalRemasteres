@@ -57,6 +57,8 @@ Shader "Portals/RecursivePortalMask0Pass"
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
+            #pragma fragmentoption ARB_precision_hint_fastest
+
 			
 
 			#include "UnityCG.cginc"
