@@ -23,7 +23,6 @@ public class RecursiveCameraCustom : MonoBehaviour
     }
     [SerializeField] private Material matherialToUse = null;
     [SerializeField] private Material matherialToUse2 = null;
-    [SerializeField] private Transform localPoint = null;
     [SerializeField] private Camera myCam = null;
     public Camera MyCam
     {
@@ -36,7 +35,6 @@ public class RecursiveCameraCustom : MonoBehaviour
             return myCam;
         }
     }
-    public Transform LocalPoint => localPoint;
 
 
     private void OnRenderImage(RenderTexture src, RenderTexture dest)

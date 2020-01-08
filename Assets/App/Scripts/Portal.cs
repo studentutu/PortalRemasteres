@@ -10,7 +10,6 @@ public class Portal : MonoBehaviour
     [SerializeField] private Transform forwardRevert = null;
     [SerializeField] private Camera thisCam;
     [SerializeField] private Portal otherPortal;
-    [SerializeField] private Renderer outlineRenderer;
     private List<Rigidbody> rigidbodies = new List<Rigidbody>();
     private Material material;
     [SerializeField] private new Renderer renderer;
@@ -36,6 +35,7 @@ public class Portal : MonoBehaviour
         PlacePortal(transform.position, transform.forward, transform.up);
         // SetColour(portalColour);
     }
+
     private void OnDrawGizmosSelected()
     {
         // Debug.LogWarning(" Secelted!!!!!!!!");
@@ -65,9 +65,10 @@ public class Portal : MonoBehaviour
         }
     }
 
-
     private void RenderCamera(Portal inPortal)
     {
+        if (otherPortal == null) return;
+
         Transform inTransform = inPortal.transform;
         Transform outTransform = otherPortal.transform;
         Transform outPortalCamera = otherPortal.thisCam.transform;
@@ -76,33 +77,53 @@ public class Portal : MonoBehaviour
         // Position the camera behind the other portal.
         Vector3 relativePos = inTransform.InverseTransformPoint(Maincamera.transform.position);
         relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
-        outPortalCamera.transform.position = outTransform.TransformPoint(relativePos);
-        outPortalCamera.rotation = Quaternion.LookRotation(otherPortal.forwardRevert.forward);
+        outPortalCamera.position = outTransform.TransformPoint(relativePos);
+        // Rotate the camera to look through the other portal.
+        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * Maincamera.transform.rotation;
+        relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
+        outPortalCamera.rotation = outTransform.rotation * relativeRot;
 
+        #region  tests
         // Quaternion beforeOtherRot = otherPortal.forwardRevert.rotation;
         // Vector3 beforeOtherPos = otherPortal.forwardRevert.position;
         // Quaternion beforeInForwardRot = inPortal.forwardRevert.rotation;
         // Vector3 beforeInForwardPos = inPortal.forwardRevert.position;
 
+        // var vectorCamToPortalWorld = inTransform.position +
+        //     (inTransform.position - Maincamera.transform.position);
+        // otherPortal.forwardRevert.localPosition = outTransform.InverseTransformPoint(vectorCamToPortalWorld);
 
+        // outPortalCamera.LookAt(otherPortal.forwardRevert.position, outTransform.up);
         // Rotate the camera to look through the other portal.
-        Quaternion relativeRot = Quaternion.Inverse(inPortal.transform.rotation) * outPortalCamera.rotation;
-        relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
-        relativeRot = otherPortal.transform.rotation * relativeRot;
-        relativeRot *= Quaternion.Euler(Maincamera.transform.rotation.eulerAngles - relativeRot.eulerAngles);
+        // Quaternion relativeRot = outPortalCamera.rotation;
+        // Quaternion.LookRotation(
+        //     otherPortal.forwardRevert.localPosition.normalized
+        //     ,
+        //     outTransform.up
+        // );
+        // Quaternion.LookRotation(otherPortal.forwardRevert.forward, otherPortal.forwardRevert.up);
+        // relativeRot *= Quaternion.Inverse(inPortal.transform.rotation);
+        // relativeRot *= Quaternion.Euler(0.0f, 180.0f, 0.0f);
+        // relativeRot *= otherPortal.transform.rotation;
+        // relativeRot *= Quaternion.Euler(Maincamera.transform.rotation.eulerAngles - relativeRot.eulerAngles);
+        // outPortalCamera.rotation = relativeRot;
+        #endregion
 
-        outPortalCamera.rotation = relativeRot;
+
+        // if (!Application.isPlaying)
+        // {
+        //     Gizmos.color = Color.red;
+        //     Gizmos.DrawLine(Maincamera.transform.position, vectorCamToPortalWorld);
+
+        //     // Gizmos.DrawLine(outTransform.position, outTransform.position + outPortalCamera.forward*5);
+        //     Gizmos.DrawLine(outTransform.position, outTransform.position + outPortalCamera.forward * 5);
+
+        // }
 
         // otherPortal.forwardRevert.position = beforeOtherPos;
         // otherPortal.forwardRevert.rotation = beforeOtherRot;
         // inPortal.forwardRevert.position = beforeInForwardPos;
         // inPortal.forwardRevert.rotation = beforeInForwardRot;
-
-        if (!Application.isPlaying)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(outTransform.position, outTransform.position + outPortalCamera.forward * 3);
-        }
 
         // Set the camera's oblique view frustum.
         Plane p = new Plane(otherPortal.forwardRevert.forward, outTransform.position);
@@ -113,23 +134,63 @@ public class Portal : MonoBehaviour
         var newMatrix = Maincamera.CalculateObliqueMatrix(clipPlaneCameraSpace);
         otherPortal.thisCam.projectionMatrix = newMatrix;
 
-        // otherPortal.thisCam.nearClipPlane = cameraTransform.localPosition.magnitude;
 
         // Render the camera to its render target.
         otherPortal.thisCam.Render();
     }
 
-    /// <summary>
-    /// Takes a point in the coordinate space specified 
-    /// by the "from" transform and transforms it to be the correct
-    /// point in the coordinate space specified by the "to" 
-    /// transform applies rotation, scale and translation.
-    /// </summary>
-    /// <returns>Point to.</returns>
-    public static Vector3 TransformPointFromTo(Transform from, Transform to, Vector3 fromPoint)
+    private void Test(Portal inPortal)
     {
-        Vector3 worldPoint = (from == null) ? fromPoint : from.InverseTransformPoint(fromPoint);
-        return (to == null) ? worldPoint : to.TransformPoint(worldPoint);
+        Transform inTransform = inPortal.transform;
+        Transform outTransform = otherPortal.transform;
+        Transform outPortalCamera = otherPortal.thisCam.transform;
+        Camera Maincamera = RecursiveCameraCustom.Instance.MyCam;
+
+        Quaternion beforeOtherRot = otherPortal.forwardRevert.rotation;
+        Vector3 beforeOtherPos = otherPortal.forwardRevert.position;
+        Quaternion beforeInForwardRot = inPortal.forwardRevert.rotation;
+        Vector3 beforeInForwardPos = inPortal.forwardRevert.position;
+
+        var vectorCamToPortalWorld = inTransform.position +
+             (inTransform.position - Maincamera.transform.position);
+        otherPortal.forwardRevert.localPosition = inTransform.InverseTransformPoint(vectorCamToPortalWorld);
+        // Rotate the camera to look through the other portal.
+        // Quaternion relativeRot2 =
+        // Quaternion.LookRotation(otherPortal.forwardRevert.forward);
+        // relativeRot *=
+        //  Quaternion.Inverse(inPortal.transform.rotation);
+        // relativeRot *= otherPortal.transform.rotation;
+        // relativeRot *= Quaternion.Euler(0.0f, 180.0f, 0.0f);
+        // relativeRot *=
+        //  Quaternion.LookRotation( vectorCamToPortal);
+        // otherPortal.forwardRevert.localPosition =  vectorCamToPortal;
+
+        // relativeRot *= Quaternion.FromToRotation(Vector3.zero, vectorCamToPortal);
+
+        // Rotate the camera to look through the other portal.
+        Quaternion relativeRot =
+        // Quaternion.Inverse(inTransform.rotation);
+        // relativeRot *= Quaternion.FromToRotation(otherPortal.forwardRevert.forward, vectorCamToPortal);
+        // relativeRot *= 
+        Quaternion.Euler(Maincamera.transform.rotation.eulerAngles - inTransform.rotation.eulerAngles);
+        outPortalCamera.LookAt(otherPortal.forwardRevert);
+        // outPortalCamera.rotation = 
+        // // outTransform.rotation * 
+        // relativeRot;
+
+        if (!Application.isPlaying)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(Maincamera.transform.position, vectorCamToPortalWorld);
+
+            // Gizmos.DrawLine(outTransform.position, outTransform.position + outPortalCamera.forward*5);
+            Gizmos.DrawLine(outTransform.position, outTransform.position + outPortalCamera.forward * 5);
+
+        }
+        otherPortal.forwardRevert.position = beforeOtherPos;
+        otherPortal.forwardRevert.rotation = beforeOtherRot;
+        inPortal.forwardRevert.position = beforeInForwardPos;
+        inPortal.forwardRevert.rotation = beforeInForwardRot;
     }
 
 
@@ -174,6 +235,19 @@ public class Portal : MonoBehaviour
         velocity = otherPortal.transform.TransformDirection(velocity);
 
         warpObj.velocity = velocity;
+
+        // var previousVelocity = warpObj.velocity;
+
+        // // Position
+        // Vector3 localPos = transform.worldToLocalMatrix.MultiplyPoint3x4(warpObj.position);
+        // localPos = new Vector3(-localPos.x, localPos.y, -localPos.z);
+        // warpObj.position = otherPortal.transform.localToWorldMatrix.MultiplyPoint3x4(localPos);
+
+        // // Rotation
+        // Quaternion difference = otherPortal.transform.rotation * 
+        //     Quaternion.Inverse(transform.rotation * Quaternion.Euler(0, 180, 0));
+        // warpObj.rotation = difference * warpObj.rotation;
+        // previousVelocity = difference * previousVelocity;
     }
 
     private void OnTriggerEnter(Collider other)

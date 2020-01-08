@@ -24,12 +24,16 @@ public class CameraMove : MonoBehaviour
     {
         // Rotate the camera.
         rotation = new Vector2(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"));
+        // rotation = new Vector2(0, Input.GetAxis("Mouse X"));
+
         transform.eulerAngles += (Vector3)rotation * cameraSpeed;
 
         // Move the camera.
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
         moveVector = new Vector3(x, 0.0f, z) * moveSpeed;
+        // moveVector = new Vector3(x, 0.0f, 0f) * moveSpeed;
+        
 
         moveY = Input.GetAxis("Elevation");
     }
