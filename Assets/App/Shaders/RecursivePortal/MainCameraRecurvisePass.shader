@@ -48,6 +48,9 @@
 		Lighting Off
 		// ZWrite Off
 		// Offset -1, -1
+		ZTest Always Cull Off ZWrite Off
+    	Fog { Mode off }
+
 
 		Pass
 		{
