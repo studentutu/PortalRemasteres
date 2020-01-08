@@ -36,7 +36,6 @@ public class Portal : MonoBehaviour
         PlacePortal(transform.position, transform.forward, transform.up);
         // SetColour(portalColour);
     }
-
     private void OnDrawGizmosSelected()
     {
         // Debug.LogWarning(" Secelted!!!!!!!!");
@@ -65,10 +64,7 @@ public class Portal : MonoBehaviour
             RenderCamera(this);
         }
     }
-    public void RenderPortal()
-    {
-        RenderCamera(this);
-    }
+
 
     private void RenderCamera(Portal inPortal)
     {
@@ -77,70 +73,36 @@ public class Portal : MonoBehaviour
         Transform outPortalCamera = otherPortal.thisCam.transform;
         Camera Maincamera = RecursiveCameraCustom.Instance.MyCam;
 
-
         // Position the camera behind the other portal.
         Vector3 relativePos = inTransform.InverseTransformPoint(Maincamera.transform.position);
-        // relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
-        outPortalCamera.position = outTransform.TransformPoint(relativePos);
-        outPortalCamera.position -= otherPortal.forwardRevert.forward * outPortalCamera.localPosition.magnitude * 2;
-        // outPortalCamera.RotateAround(outTransform.position, inTransform.up, 180);
+        relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
+        outPortalCamera.transform.position = outTransform.TransformPoint(relativePos);
+        outPortalCamera.rotation = Quaternion.LookRotation(otherPortal.forwardRevert.forward);
 
-        Quaternion beforeOtherRot = otherPortal.forwardRevert.rotation;
-        Vector3 beforeOtherPos = otherPortal.forwardRevert.position;
+        // Quaternion beforeOtherRot = otherPortal.forwardRevert.rotation;
+        // Vector3 beforeOtherPos = otherPortal.forwardRevert.position;
+        // Quaternion beforeInForwardRot = inPortal.forwardRevert.rotation;
+        // Vector3 beforeInForwardPos = inPortal.forwardRevert.position;
 
-        Quaternion beforeInForwardRot = inPortal.forwardRevert.rotation;
-        Vector3 beforeInForwardPos = inPortal.forwardRevert.position;
-
-        // outPortalCamera.localRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-
-        // otherPortal.forwardRevert.rotation = Camera.main.transform.rotation;
-        // otherPortal.forwardRevert.position = Camera.main.transform.position;
 
         // Rotate the camera to look through the other portal.
-        // Quaternion relativeRot = otherPortal.forwardRevert.localRotation;
-        // // Quaternion.Inverse(inTransform.rotation) * Camera.main.transform.rotation;
+        Quaternion relativeRot = Quaternion.Inverse(inPortal.transform.rotation) * outPortalCamera.rotation;
+        relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
+        relativeRot = otherPortal.transform.rotation * relativeRot;
+        relativeRot *= Quaternion.Euler(Maincamera.transform.rotation.eulerAngles - relativeRot.eulerAngles);
 
-        // 1. SceneView Mask worldScale , DislocatedimiteraImagetarget worldSclae
-        // 2. ArMainCamera pos, loc postion to DislocatedimiteraImagetarget
+        outPortalCamera.rotation = relativeRot;
 
+        // otherPortal.forwardRevert.position = beforeOtherPos;
+        // otherPortal.forwardRevert.rotation = beforeOtherRot;
+        // inPortal.forwardRevert.position = beforeInForwardPos;
+        // inPortal.forwardRevert.rotation = beforeInForwardRot;
 
-        // var localPoint = otherPortal.forwardRevert;
-        // localPoint.position = Maincamera.transform.position;
-        // localPoint.rotation = Maincamera.transform.rotation; // need in order to have a correct rotation
-        // outPortalCamera.localRotation = Quaternion.Euler(0,180 - localPoint.localRotation.eulerAngles.y ,0) ;
-        // outPortalCamera.localRotation = localPoint.localRotation; // * inTransform.rotation;
-
-
-        // 2. Vuforia/ArFoundation Camera Rotates around the image target!
-        // 3. Multiply with Rotation of the Target Root Object!
-        // Quaternion arCamInWorld = 
-        //                     // outTransform.rotation *
-        //                     // Quaternion.Euler(0f, 180.0f, 0f) *
-        //                     Quaternion.Inverse(inTransform.rotation) // both are rotating!
-        //                     * Maincamera.transform.rotation; // both are rotating!
-
-        // Vector3 arCamInWorldPos = outTransform.TransformPoint( localPoint.transform.localPosition);
-        // outPortalCamera.SetPositionAndRotation(arCamInWorldPos, arCamInWorld);
-
-        // outPortalCamera.RotateAround(outTransform.position, outTransform.up, outTransform.rotation.eulerAngles.y);
-        // outPortalCamera.localRotation *= beforeOtherRot; 
-
-        // Rotate the camera to look through the other portal.
-        // Quaternion relativeRot = Quaternion.Inverse(inPortal.transform.rotation) * outPortalCamera.rotation;
-        // relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
-        // outPortalCamera.rotation = otherPortal.forwardRevert.rotation * relativeRot;
-
-        // float angularDifferenceBetweenPortalRotations = Quaternion.Angle(inTransform.rotation, outTransform.rotation);
-
-        // Quaternion portalRotationalDifference = Quaternion.AngleAxis(angularDifferenceBetweenPortalRotations, inTransform.up);
-        // Vector3 newCameraDirection = portalRotationalDifference * inTransform.forward;
-        // outPortalCamera.rotation = Quaternion.LookRotation(newCameraDirection, Vector3.up);
-
-        otherPortal.forwardRevert.position = beforeOtherPos;
-        otherPortal.forwardRevert.rotation = beforeOtherRot;
-
-        inPortal.forwardRevert.position = beforeInForwardPos;
-        inPortal.forwardRevert.rotation = beforeInForwardRot;
+        if (!Application.isPlaying)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(outTransform.position, outTransform.position + outPortalCamera.forward * 3);
+        }
 
         // Set the camera's oblique view frustum.
         Plane p = new Plane(otherPortal.forwardRevert.forward, outTransform.position);
