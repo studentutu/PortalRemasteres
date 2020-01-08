@@ -46,8 +46,8 @@
 			"CanUseSpriteAtlas" = "false"
 		}
 		Lighting Off
-		ZWrite On
-		Offset -1, -1
+		// ZWrite Off
+		// Offset -1, -1
 
 		Pass
 		{
@@ -59,8 +59,8 @@
 				Pass[_StencilOp]
 				// ReadMask[_StencilReadMask]
 				// WriteMask[_StencilWriteMask]
-				Fail[_StencilOpFail] // do not change stencil value if stencil test fails
-				ZFail[_StencilOpZFail] // do not change stencil value if stencil test passes but depth test fails
+				// Fail[_StencilOpFail] // do not change stencil value if stencil test fails
+				// ZFail[_StencilOpZFail] // do not change stencil value if stencil test passes but depth test fails
 			}
 
 			CGPROGRAM

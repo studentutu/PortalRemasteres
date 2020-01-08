@@ -35,7 +35,7 @@
             "CanUseSpriteAtlas" = "false"
 		}
 		Lighting Off
-		ZWrite On
+		ZWrite Off
 		Offset -1, -1
 
         Pass

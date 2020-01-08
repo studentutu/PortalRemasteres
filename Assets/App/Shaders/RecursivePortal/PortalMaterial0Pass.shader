@@ -35,7 +35,7 @@ Shader "Portals/RecursivePortalMask0Pass"
 		// Cull both
 		Lighting Off
 		ZWrite Off
-		Offset -1, -1
+		// Offset -1, -1
 
 
 		Pass
