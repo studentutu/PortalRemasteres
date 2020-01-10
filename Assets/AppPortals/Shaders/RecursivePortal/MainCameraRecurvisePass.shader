@@ -37,6 +37,7 @@
 	{
 		Tags 
 		{ 
+			"LightMode" = "ForwardBase"
 			"RenderType" = "Opaque"  // Opaque  transparent tranparentcutout
 			"Queue" = "Geometry+100"  // Geometry  
 			"PreviewType" = "Plane"
@@ -72,11 +73,40 @@
 			#pragma multi_compile_instancing
             #pragma fragmentoption ARB_precision_hint_fastest
 
+			// make fog work
+            // #pragma multi_compile_fog  
+
+			// Ligthing
+            // #pragma multi_compile_fwdbase 
+
+			// Skip variants
+            #pragma skip_variants POINT 
+            #pragma skip_variants SPOT 
+            #pragma skip_variants POINT_COOKIE 
+            #pragma skip_variants VERTEXLIGHT_ON
+            #pragma skip_variants LIGHTPROBE_SH 
+            #pragma skip_variants DIRECTIONAL 
+            #pragma skip_variants SHADOWS_SCREEN
+            #pragma skip_variants UNITY_HDR_ON 
+            #pragma skip_variants SHADOWS_CUBE 
+            #pragma skip_variants SHADOWS_DEPTH 
+            #pragma skip_variants FOG_LINEAR 
+            #pragma skip_variants FOG_EXP 
+            #pragma skip_variants FOG_EXP2 
+            #pragma skip_variants DYNAMICLIGHTMAP_ON 
+            #pragma skip_variants DIRECTIONAL_COOKIE
+            #pragma skip_variants DIRLIGHTMAP_COMBINED
+            #pragma skip_variants SHADOWS_SHADOWMASK 
+            #pragma skip_variants LIGHTMAP_SHADOW_MIXING
+            #pragma skip_variants SHADOWS_SOFT
+
 
 			// fast if statement
-            #define IF(a, b, c) lerp(b, c, step((fixed) (a), 0.0)); 
+            // #define IF(a, b, c) lerp(b, c, step((fixed) (a), 0.0)); 
 
 			#include "UnityCG.cginc"
+            // #include "AutoLight.cginc"
+
 
 			struct appdata
 			{
@@ -88,6 +118,8 @@
 			{
 				float4 vertex : SV_POSITION;
 				float4 screenPos : TEXCOORD0;
+				// UNITY_FOG_COORDS(1)
+
 			};
 
 			v2f vert(appdata v)
@@ -95,6 +127,8 @@
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.screenPos = ComputeScreenPos(o.vertex);
+                // UNITY_TRANSFER_FOG(output,output.pos);
+
 				return o;
 			}
 
@@ -111,6 +145,8 @@
 				// 	int dataIndex = proximityLightIndex * PROXIMITY_LIGHT_DATA_SIZE;
 				// 	fadeDistance = min(fadeDistance, NearLightDistance(_ProximityLightData[dataIndex], o.worldPosition));
 				// }
+                // UNITY_APPLY_FOG(i.fogCoord, col);
+
 				return col;
 			}
 			ENDCG
