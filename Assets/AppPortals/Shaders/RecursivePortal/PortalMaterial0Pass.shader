@@ -31,6 +31,7 @@ Shader "Portals/RecursivePortalMask0Pass"
 			"ForceNoShadowCasting" = "true"
 			"IgnoreProjector" = "true"
 			"CanUseSpriteAtlas" = "false"
+			"IsEmissive" = "true" 
 		}
 		// Cull both
 		Lighting Off
