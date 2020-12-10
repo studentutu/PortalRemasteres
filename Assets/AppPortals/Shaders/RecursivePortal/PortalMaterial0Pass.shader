@@ -32,6 +32,7 @@ Shader "Portals/RecursivePortalMask0Pass"
 			"IgnoreProjector" = "true"
 			"CanUseSpriteAtlas" = "false"
 			"IsEmissive" = "true" 
+			"LightMode" = "ForwardBase" // Meta ShadowCaster Deferred ForwardBase
 		}
 		// Cull both
 		Lighting Off
